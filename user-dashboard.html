@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SmartBlog User Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900 selection:bg-brand-300 selection:text-slate-900">
+    <div class="bg-white shadow-sm">
+      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-8">
+        <a href="index.html" class="inline-flex items-center gap-3 text-brand-700">
+          <span class="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-brand-100 text-2xl font-bold">S</span>
+          <span class="text-lg font-semibold">SmartBlog</span>
+        </a>
+        <nav class="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-600">
+          <a href="index.html" class="transition hover:text-brand-600">Home</a>
+          <a href="admin-dashboard.html" class="transition hover:text-brand-600">Admin Dashboard</a>
+        </nav>
+      </div>
+    </div>
+
+    <main class="mx-auto max-w-7xl px-6 py-10 sm:px-8 lg:py-14">
+      <div class="mb-10 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <p class="text-sm uppercase tracking-[0.24em] text-brand-600">User dashboard</p>
+            <h1 class="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Your content metrics and recent activity</h1>
+            <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">Review performance, track drafts, and see the latest interactions on your posts.</p>
+          </div>
+          <div class="grid gap-3 sm:grid-cols-2">
+            <a href="#activity" class="inline-flex items-center justify-center rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">Recent activity</a>
+            <a href="#posts" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-700">Manage posts</a>
+          </div>
+        </div>
+      </div>
+
+      <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Published posts</p>
+          <p class="mt-4 text-4xl font-semibold text-slate-900">28</p>
+          <p class="mt-2 text-sm text-slate-500">Articles live and visible to readers.</p>
+        </div>
+        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Drafts</p>
+          <p class="mt-4 text-4xl font-semibold text-slate-900">7</p>
+          <p class="mt-2 text-sm text-slate-500">Drafts waiting for final review.</p>
+        </div>
+        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Comments</p>
+          <p class="mt-4 text-4xl font-semibold text-slate-900">1.2k</p>
+          <p class="mt-2 text-sm text-slate-500">Comments received across your posts.</p>
+        </div>
+        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
+          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Followers</p>
+          <p class="mt-4 text-4xl font-semibold text-slate-900">5.4k</p>
+          <p class="mt-2 text-sm text-slate-500">People following your author profile.</p>
+        </div>
+      </section>
+
+      <section id="posts" class="mt-10 grid gap-6 xl:grid-cols-[1.4fr_0.8fr]">
+        <div class="rounded-[2rem] bg-white p-8 shadow-sm">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Draft queue</p>
+              <h2 class="mt-3 text-2xl font-semibold text-slate-900">Publish-ready drafts</h2>
+            </div>
+            <span class="rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">7 pending</span>
+          </div>
+          <div class="mt-8 space-y-6">
+            <article class="rounded-3xl border border-slate-200 p-6">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-lg font-semibold text-slate-900">User onboarding checklist for new writers</p>
+                  <p class="mt-2 text-sm text-slate-500">Deadline: Apr 24 · Estimated read time 5 min</p>
+                </div>
+                <span class="rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Editing</span>
+              </div>
+            </article>
+            <article class="rounded-3xl border border-slate-200 p-6">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-lg font-semibold text-slate-900">Build a newsletter playbook for creators</p>
+                  <p class="mt-2 text-sm text-slate-500">Deadline: Apr 26 · Estimated read time 7 min</p>
+                </div>
+                <span class="rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Review</span>
+              </div>
+            </article>
+            <article class="rounded-3xl border border-slate-200 p-6">
+              <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p class="text-lg font-semibold text-slate-900">Content calendar for Q3 launches</p>
+                  <p class="mt-2 text-sm text-slate-500">Deadline: May 02 · Estimated read time 6 min</p>
+                </div>
+                <span class="rounded-full bg-slate-100 px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-600">Planning</span>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <aside class="space-y-6 rounded-[2rem] bg-white p-8 shadow-sm">
+          <div>
+            <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Profile summary</p>
+            <div class="mt-6 flex items-center gap-4">
+              <div class="inline-flex h-14 w-14 items-center justify-center rounded-3xl bg-brand-100 text-2xl font-bold text-brand-700">U</div>
+              <div>
+                <p class="text-lg font-semibold text-slate-900">Jordan Blake</p>
+                <p class="text-sm text-slate-500">Senior writer · Product content</p>
+              </div>
+            </div>
+          </div>
+          <div class="rounded-3xl bg-slate-50 p-6">
+            <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Top category</p>
+            <p class="mt-3 text-xl font-semibold text-slate-900">Design Systems</p>
+            <p class="mt-2 text-sm text-slate-500">Most engaged category across the last 30 days.</p>
+          </div>
+          <div class="rounded-3xl bg-slate-50 p-6">
+            <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Weekly performance</p>
+            <div class="mt-4 space-y-3">
+              <div class="flex items-center justify-between text-sm text-slate-600"><span>Views</span><span>18.4k</span></div>
+              <div class="flex items-center justify-between text-sm text-slate-600"><span>New comments</span><span>132</span></div>
+              <div class="flex items-center justify-between text-sm text-slate-600"><span>Shares</span><span>291</span></div>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section id="activity" class="mt-10 rounded-[2rem] bg-white p-8 shadow-sm">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Activity</p>
+            <h2 class="mt-3 text-2xl font-semibold text-slate-900">Recent interactions</h2>
+          </div>
+          <p class="text-sm text-slate-500">Updated moments ago</p>
+        </div>
+        <div class="mt-8 space-y-4">
+          <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+            <p class="text-sm text-slate-600">Apr 16 · 11:20</p>
+            <p class="mt-2 text-base font-semibold text-slate-900">15 new comments on “Design systems for editorial teams”.</p>
+          </div>
+          <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+            <p class="text-sm text-slate-600">Apr 15 · 09:45</p>
+            <p class="mt-2 text-base font-semibold text-slate-900">Your article “Audience growth with storytelling” was featured in the weekly digest.</p>
+          </div>
+          <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+            <p class="text-sm text-slate-600">Apr 13 · 14:10</p>
+            <p class="mt-2 text-base font-semibold text-slate-900">Draft “A framework for blog launches” moved to review.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
