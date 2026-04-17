@@ -1,5 +1,644 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Sign in to your SmartBlog account to manage posts, drafts, and editorial workflows." />
+  <meta name="theme-color" content="#246bd7" />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Sign in to SmartBlog" />
+  <meta property="og:description" content="Access your SmartBlog account and continue creating amazing content." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📝</text></svg>" />
+  
+  <title>Sign In — SmartBlog</title>
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5fbff',
+              100: '#e7f5ff',
+              200: '#cfe6ff',
+              300: '#9fccff',
+              400: '#61a7ff',
+              500: '#2f84ff',
+              600: '#246bd7',
+              700: '#1d55b0',
+              800: '#19478f',
+              900: '#163d7a'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-up': 'slideUp 0.6s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+          },
+        }
+      }
+    };
+  </script>
+  
+  <!-- Custom styles -->
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    *:focus-visible {
+      outline: 2px solid #246bd7;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+    
+    /* Password strength indicator */
+    .password-strength {
+      transition: all 0.3s ease;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    
+    /* Loading animation */
+    .btn-loading {
+      position: relative;
+      pointer-events: none;
+    }
+    
+    .btn-loading:after {
+      content: '';
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      top: 50%;
+      left: 50%;
+      margin-left: -8px;
+      margin-top: -8px;
+      border: 2px solid transparent;
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: button-loading-spinner 0.6s linear infinite;
+    }
+    
+    .btn-loading .btn-text {
+      opacity: 0;
+    }
+    
+    @keyframes button-loading-spinner {
+      from { transform: rotate(0turn); }
+      to { transform: rotate(1turn); }
+    }
+    
+    /* Shake animation for errors */
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+      20%, 40%, 60%, 80% { transform: translateX(4px); }
+    }
+    
+    .shake {
+      animation: shake 0.5s ease-in-out;
+    }
+    
+    /* Floating label effect */
+    .input-wrapper {
+      position: relative;
+    }
+    
+    .input-wrapper input:focus + label,
+    .input-wrapper input:not(:placeholder-shown) + label {
+      transform: translateY(-24px) scale(0.85);
+      color: #246bd7;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-brand-50/30 text-slate-900 selection:bg-brand-300 selection:text-slate-900 antialiased">
+  <!-- Skip to main content -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-brand-600 text-white px-4 py-2 rounded-full z-50">
+    Skip to main content
+  </a>
+
+  <!-- Background decorations -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute -top-40 -right-40 w-96 h-96 bg-brand-200/20 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-br from-brand-100/10 to-transparent rounded-full blur-3xl"></div>
+  </div>
+
+  <div class="relative mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:py-12">
+    <!-- Header with back navigation -->
+    <header class="mb-10 flex flex-wrap items-center justify-between gap-4">
+      <a href="index.html" class="group inline-flex items-center gap-3" aria-label="Back to SmartBlog Home">
+        <div class="relative">
+          <span class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-600 text-2xl font-bold text-white shadow-lg shadow-brand-500/20 transition-transform group-hover:scale-105">
+            S
+          </span>
+          <span class="absolute -bottom-1 -right-1 h-3 w-3 rounded-full bg-emerald-400 border-2 border-white"></span>
+        </div>
+        <span class="text-xl font-bold gradient-text">SmartBlog</span>
+      </a>
+      
+      <!-- Navigation pills -->
+      <div class="flex flex-wrap gap-2">
+        <nav class="flex items-center gap-1 p-1 bg-white/60 backdrop-blur-sm rounded-full border border-slate-200/60 shadow-sm" aria-label="Authentication navigation">
+          <a href="login.html" class="px-5 py-2 text-sm font-medium text-white bg-brand-600 rounded-full shadow-sm transition-all" aria-current="page">
+            Sign in
+          </a>
+          <a href="register.html" class="px-5 py-2 text-sm font-medium text-slate-700 hover:text-brand-700 rounded-full transition-all">
+            Create account
+          </a>
+          <a href="user-dashboard.html" class="px-5 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 rounded-full transition-all">
+            Dashboard
+          </a>
+          <a href="admin-dashboard.html" class="px-5 py-2 text-sm font-medium text-slate-600 hover:text-brand-600 rounded-full transition-all">
+            Admin
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <div class="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
+        <!-- Left Column - Welcome Message -->
+        <div class="space-y-6 animate-slide-up">
+          <div class="rounded-3xl bg-white/80 backdrop-blur-sm p-8 sm:p-12 shadow-xl border border-slate-200/60">
+            <!-- Badge -->
+            <div class="inline-flex items-center gap-2 rounded-full bg-brand-50 px-4 py-2 text-sm font-medium text-brand-700 border border-brand-100">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+              </svg>
+              <span>Secure login</span>
+            </div>
+            
+            <h1 class="mt-6 text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl">
+              Welcome back to <span class="gradient-text">SmartBlog</span>
+            </h1>
+            
+            <p class="mt-4 text-lg leading-8 text-slate-600">
+              Access your drafts, manage posts, and review editorial requests with a secure account experience.
+            </p>
+            
+            <!-- Features list -->
+            <div class="mt-8 space-y-4">
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
+                  <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <span class="text-slate-700">Access all your drafts and published posts</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
+                  <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <span class="text-slate-700">Track reader engagement and analytics</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0 w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center mt-0.5">
+                  <svg class="w-3 h-3 text-emerald-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                  </svg>
+                </div>
+                <span class="text-slate-700">Collaborate with editors and team members</span>
+              </div>
+            </div>
+            
+            <!-- Demo credentials card -->
+            <div class="mt-10 rounded-2xl bg-gradient-to-br from-slate-50 to-brand-50/50 p-6 border border-slate-200/60">
+              <div class="flex items-center gap-3 mb-4">
+                <div class="w-8 h-8 rounded-lg bg-brand-100 flex items-center justify-center">
+                  <svg class="w-4 h-4 text-brand-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                </div>
+                <p class="text-sm font-semibold uppercase tracking-wider text-slate-700">Demo credentials</p>
+              </div>
+              <div class="space-y-2">
+                <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-200">
+                  <span class="text-sm text-slate-600">Email</span>
+                  <span class="text-sm font-mono font-semibold text-slate-900">writer@smartblog.com</span>
+                  <button 
+                    onclick="copyToClipboard('writer@smartblog.com', this)" 
+                    class="text-brand-600 hover:text-brand-700 text-xs font-medium px-2 py-1 rounded hover:bg-brand-50 transition-colors"
+                    aria-label="Copy email"
+                  >
+                    Copy
+                  </button>
+                </div>
+                <div class="flex items-center justify-between p-3 bg-white rounded-xl border border-slate-200">
+                  <span class="text-sm text-slate-600">Password</span>
+                  <span class="text-sm font-mono font-semibold text-slate-900">••••••••••••</span>
+                  <button 
+                    onclick="fillCredentials(); copyToClipboard('SmartBlog123', this)" 
+                    class="text-brand-600 hover:text-brand-700 text-xs font-medium px-2 py-1 rounded hover:bg-brand-50 transition-colors"
+                    aria-label="Fill credentials"
+                  >
+                    Fill
+                  </button>
+                </div>
+              </div>
+              <p class="mt-4 text-xs text-slate-500 flex items-center gap-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+                Click fill to auto-populate the form
+              </p>
+            </div>
+            
+            <!-- Trust indicators -->
+            <div class="mt-8 flex items-center gap-6 text-sm text-slate-500">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+                <span>256-bit encryption</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+                <span>2FA available</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Login Form -->
+        <div class="animate-slide-up" style="animation-delay: 0.1s;">
+          <div class="rounded-3xl bg-white/80 backdrop-blur-sm p-8 sm:p-10 shadow-xl border border-slate-200/60 lg:sticky lg:top-24">
+            <!-- Social login options -->
+            <div class="space-y-3">
+              <button class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all">
+                <svg class="w-5 h-5" viewBox="0 0 24 24">
+                  <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                  <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                  <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                  <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                </svg>
+                Continue with Google
+              </button>
+              
+              <button class="w-full flex items-center justify-center gap-3 px-4 py-3 border-2 border-slate-200 rounded-2xl text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 hover:border-slate-300 transition-all">
+                <svg class="w-5 h-5 text-[#24292F]" fill="currentColor" viewBox="0 0 24 24">
+                  <path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/>
+                </svg>
+                Continue with GitHub
+              </button>
+            </div>
+            
+            <!-- Divider -->
+            <div class="relative my-8">
+              <div class="absolute inset-0 flex items-center">
+                <div class="w-full border-t border-slate-200"></div>
+              </div>
+              <div class="relative flex justify-center text-sm">
+                <span class="px-4 bg-white text-slate-500 font-medium">Or continue with email</span>
+              </div>
+            </div>
+            
+            <!-- Login form -->
+            <form id="loginForm" class="space-y-6" onsubmit="handleLogin(event)">
+              <!-- Email field -->
+              <div>
+                <label for="email" class="block text-sm font-semibold text-slate-900 mb-2">
+                  Email address
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 7.89a2 2 0 002.84 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                  <input 
+                    id="email" 
+                    name="email"
+                    type="email" 
+                    placeholder="you@example.com" 
+                    autocomplete="email"
+                    required
+                    class="w-full rounded-2xl border-2 border-slate-200 bg-white/50 pl-12 pr-4 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10"
+                  />
+                </div>
+              </div>
+              
+              <!-- Password field -->
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <label for="password" class="block text-sm font-semibold text-slate-900">
+                    Password
+                  </label>
+                  <a href="#" class="text-sm font-medium text-brand-600 hover:text-brand-700 transition-colors">
+                    Forgot password?
+                  </a>
+                </div>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                  </div>
+                  <input 
+                    id="password" 
+                    name="password"
+                    type="password" 
+                    placeholder="Enter your password" 
+                    autocomplete="current-password"
+                    required
+                    class="w-full rounded-2xl border-2 border-slate-200 bg-white/50 pl-12 pr-12 py-3.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none transition-all focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-500/10"
+                  />
+                  <button 
+                    type="button"
+                    onclick="togglePasswordVisibility()"
+                    class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-slate-600"
+                    aria-label="Toggle password visibility"
+                  >
+                    <svg id="eyeIcon" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Remember me & additional options -->
+              <div class="flex items-center justify-between">
+                <label class="flex items-center gap-2 cursor-pointer group">
+                  <input 
+                    type="checkbox" 
+                    name="remember"
+                    class="w-4 h-4 rounded border-2 border-slate-300 text-brand-600 focus:ring-brand-500 focus:ring-offset-0 cursor-pointer"
+                  />
+                  <span class="text-sm text-slate-600 group-hover:text-slate-900 transition-colors">Remember me</span>
+                </label>
+                <span class="text-xs text-slate-400 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                  </svg>
+                  Secure session
+                </span>
+              </div>
+              
+              <!-- Submit button -->
+              <button 
+                type="submit" 
+                id="submitBtn"
+                class="relative w-full rounded-2xl bg-gradient-to-r from-brand-600 to-brand-700 px-6 py-4 text-sm font-semibold text-white shadow-lg shadow-brand-500/30 transition-all hover:shadow-xl hover:shadow-brand-500/40 hover:scale-[1.02] focus:ring-4 focus:ring-brand-500/20"
+              >
+                <span class="btn-text">Sign in to your account</span>
+                <svg class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 opacity-0 transition-opacity group-hover:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+              </button>
+              
+              <!-- Sign up link -->
+              <p class="text-center text-sm text-slate-600">
+                Don't have an account? 
+                <a href="register.html" class="font-semibold text-brand-600 hover:text-brand-700 transition-colors">
+                  Create one now
+                  <span aria-hidden="true">→</span>
+                </a>
+              </p>
+            </form>
+            
+            <!-- Additional links -->
+            <div class="mt-6 pt-6 border-t border-slate-200">
+              <div class="flex items-center justify-between text-xs text-slate-500">
+                <a href="#" class="hover:text-brand-600 transition-colors">Terms of Service</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">Privacy Policy</a>
+                <a href="#" class="hover:text-brand-600 transition-colors">Contact Support</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- JavaScript for enhanced functionality -->
+  <script>
+    // Password visibility toggle
+    function togglePasswordVisibility() {
+      const passwordInput = document.getElementById('password');
+      const eyeIcon = document.getElementById('eyeIcon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+        `;
+      } else {
+        passwordInput.type = 'password';
+        eyeIcon.innerHTML = `
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        `;
+      }
+    }
+    
+    // Copy to clipboard function
+    function copyToClipboard(text, button) {
+      navigator.clipboard.writeText(text).then(() => {
+        const originalText = button.textContent;
+        button.textContent = 'Copied!';
+        button.classList.add('text-emerald-600');
+        
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.classList.remove('text-emerald-600');
+        }, 2000);
+      }).catch(err => {
+        console.error('Failed to copy:', err);
+        button.textContent = 'Failed';
+        setTimeout(() => {
+          button.textContent = 'Copy';
+        }, 2000);
+      });
+    }
+    
+    // Fill credentials function
+    function fillCredentials() {
+      document.getElementById('email').value = 'writer@smartblog.com';
+      document.getElementById('password').value = 'SmartBlog123';
+      
+      // Add visual feedback
+      const emailInput = document.getElementById('email');
+      const passwordInput = document.getElementById('password');
+      
+      emailInput.classList.add('border-emerald-500');
+      passwordInput.classList.add('border-emerald-500');
+      
+      setTimeout(() => {
+        emailInput.classList.remove('border-emerald-500');
+        passwordInput.classList.remove('border-emerald-500');
+      }, 2000);
+    }
+    
+    // Handle form submission
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submitBtn');
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const remember = document.querySelector('input[name="remember"]').checked;
+      
+      // Basic validation
+      if (!email || !password) {
+        showError('Please fill in all fields');
+        return;
+      }
+      
+      if (!isValidEmail(email)) {
+        showError('Please enter a valid email address');
+        return;
+      }
+      
+      // Show loading state
+      submitBtn.classList.add('btn-loading');
+      submitBtn.disabled = true;
+      
+      // Simulate API call
+      setTimeout(() => {
+        // Demo credentials check
+        if (email === 'writer@smartblog.com' && password === 'SmartBlog123') {
+          // Success
+          submitBtn.classList.remove('btn-loading');
+          submitBtn.classList.add('bg-emerald-600', 'from-emerald-600', 'to-emerald-700');
+          submitBtn.innerHTML = '<span class="btn-text">✓ Login successful!</span>';
+          
+          // Store session if remember me is checked
+          if (remember) {
+            localStorage.setItem('smartblog_session', JSON.stringify({
+              email: email,
+              timestamp: new Date().getTime()
+            }));
+          }
+          
+          // Redirect after success
+          setTimeout(() => {
+            window.location.href = 'user-dashboard.html';
+          }, 1000);
+        } else {
+          // Error
+          submitBtn.classList.remove('btn-loading');
+          submitBtn.disabled = false;
+          showError('Invalid email or password. Try the demo credentials.');
+          
+          // Shake effect on form
+          document.querySelector('form').classList.add('shake');
+          setTimeout(() => {
+            document.querySelector('form').classList.remove('shake');
+          }, 500);
+        }
+      }, 1500);
+    }
+    
+    // Email validation
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+    
+    // Show error message
+    function showError(message) {
+      // Check if error container exists
+      let errorContainer = document.getElementById('error-message');
+      
+      if (!errorContainer) {
+        errorContainer = document.createElement('div');
+        errorContainer.id = 'error-message';
+        errorContainer.className = 'mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 animate-slide-up';
+        document.querySelector('form').insertBefore(errorContainer, document.querySelector('form').firstChild);
+      }
+      
+      errorContainer.textContent = message;
+      errorContainer.style.display = 'block';
+      
+      // Auto-hide after 5 seconds
+      setTimeout(() => {
+        errorContainer.style.display = 'none';
+      }, 5000);
+    }
+    
+    // Check for saved session
+    document.addEventListener('DOMContentLoaded', () => {
+      const session = localStorage.getItem('smartblog_session');
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          // Check if session is less than 7 days old
+          if (new Date().getTime() - data.timestamp < 7 * 24 * 60 * 60 * 1000) {
+            document.getElementById('email').value = data.email;
+            document.querySelector('input[name="remember"]').checked = true;
+          } else {
+            localStorage.removeItem('smartblog_session');
+          }
+        } catch (e) {
+          localStorage.removeItem('smartblog_session');
+        }
+      }
+      
+      // Focus on email field
+      document.getElementById('email').focus();
+    });
+    
+    // Keyboard shortcut for demo fill (Ctrl/Cmd + D)
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        fillCredentials();
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -80,4 +719,4 @@
       </div>
     </div>
   </body>
-</html>
+</html> -->

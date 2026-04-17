@@ -1,5 +1,943 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SmartBlog Admin Dashboard — Manage users, review content, and monitor platform analytics." />
+  <meta name="theme-color" content="#246bd7" />
+  <meta name="robots" content="noindex, nofollow" />
+  
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="SmartBlog Admin Dashboard" />
+  <meta property="og:description" content="Administrative control panel for managing SmartBlog platform." />
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>" />
+  
+  <title>Admin Dashboard — SmartBlog</title>
+  
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  
+  <!-- Chart.js for analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f5fbff',
+              100: '#e7f5ff',
+              200: '#cfe6ff',
+              300: '#9fccff',
+              400: '#61a7ff',
+              500: '#2f84ff',
+              600: '#246bd7',
+              700: '#1d55b0',
+              800: '#19478f',
+              900: '#163d7a'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.5s ease-in-out',
+            'slide-up': 'slideUp 0.6s ease-out',
+            'slide-in': 'slideIn 0.3s ease-out',
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'spin-slow': 'spin 3s linear infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              '0%': { opacity: '0' },
+              '100%': { opacity: '1' },
+            },
+            slideUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            },
+            slideIn: {
+              '0%': { opacity: '0', transform: 'translateX(-20px)' },
+              '100%': { opacity: '1', transform: 'translateX(0)' },
+            },
+          },
+        }
+      }
+    };
+  </script>
+  
+  <!-- Custom styles -->
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+    
+    *:focus-visible {
+      outline: 2px solid #246bd7;
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+    
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    
+    /* Admin specific styles */
+    .stat-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    }
+    
+    /* Table row hover */
+    .table-row-hover {
+      transition: background-color 0.2s ease;
+    }
+    
+    .table-row-hover:hover {
+      background-color: #f8fafc;
+    }
+    
+    /* Status badges */
+    .status-badge {
+      @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium;
+    }
+    
+    /* Mobile menu */
+    .mobile-menu-open {
+      overflow: hidden;
+    }
+    
+    /* Chart container */
+    .chart-container {
+      position: relative;
+      height: 300px;
+      width: 100%;
+    }
+    
+    /* Modal backdrop */
+    .modal-backdrop {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+    
+    /* Admin badge */
+    .admin-badge {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-50 text-slate-900 selection:bg-brand-300 selection:text-slate-900 antialiased">
+  <!-- Skip to main content -->
+  <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-brand-600 text-white px-4 py-2 rounded-full z-50">
+    Skip to main content
+  </a>
+
+  <!-- Admin Navigation Bar -->
+  <nav class="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/60 shadow-sm">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex h-16 items-center justify-between">
+        <!-- Logo and brand -->
+        <div class="flex items-center gap-4">
+          <a href="index.html" class="flex items-center gap-2 group">
+            <div class="relative">
+              <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-brand-600 text-xl font-bold text-white shadow-lg shadow-purple-500/20 transition-transform group-hover:scale-105">
+                S
+              </span>
+              <span class="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-red-500 border-2 border-white flex items-center justify-center">
+                <span class="text-[8px] font-bold text-white">A</span>
+              </span>
+            </div>
+            <span class="text-lg font-bold bg-gradient-to-r from-purple-600 to-brand-600 bg-clip-text text-transparent hidden sm:block">SmartBlog Admin</span>
+          </a>
+          
+          <!-- Admin badge -->
+          <div class="hidden lg:flex items-center gap-1 px-3 py-1 admin-badge rounded-full">
+            <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+            </svg>
+            <span class="text-xs font-medium text-white">Administrator</span>
+          </div>
+        </div>
+        
+        <!-- Quick actions -->
+        <div class="hidden md:flex items-center gap-2">
+          <button class="px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-lg transition-all flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+            </svg>
+            Quick Action
+          </button>
+        </div>
+        
+        <!-- Search bar -->
+        <div class="hidden lg:flex flex-1 max-w-md mx-8">
+          <div class="relative w-full">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+              </svg>
+            </div>
+            <input 
+              type="search" 
+              placeholder="Search users, posts, or logs..." 
+              class="w-full rounded-xl border border-slate-200 bg-slate-50/50 pl-10 pr-4 py-2 text-sm focus:border-brand-500 focus:bg-white focus:ring-2 focus:ring-brand-500/20 transition-all"
+            />
+            <kbd class="absolute right-2 top-1/2 -translate-y-1/2 hidden xl:inline-flex items-center gap-1 px-2 py-0.5 text-xs text-slate-400 bg-slate-100 rounded border border-slate-200">
+              <span>⌘</span><span>K</span>
+            </kbd>
+          </div>
+        </div>
+        
+        <!-- Right navigation -->
+        <div class="flex items-center gap-2">
+          <!-- System health indicator -->
+          <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-50 rounded-lg border border-emerald-200">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span class="text-xs font-medium text-emerald-700">System Healthy</span>
+          </div>
+          
+          <!-- Notifications -->
+          <div class="relative">
+            <button class="relative p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-all" onclick="toggleNotifications()" aria-label="Notifications">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
+              </svg>
+              <span class="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 border border-white"></span>
+            </button>
+            
+            <!-- Notifications dropdown -->
+            <div id="notificationsMenu" class="hidden absolute right-0 mt-2 w-80 rounded-xl bg-white shadow-lg border border-slate-200 py-2 z-50">
+              <div class="px-4 py-3 border-b border-slate-200">
+                <div class="flex items-center justify-between">
+                  <h4 class="text-sm font-semibold text-slate-900">Notifications</h4>
+                  <button class="text-xs text-brand-600 hover:text-brand-700">Mark all read</button>
+                </div>
+              </div>
+              <div class="max-h-96 overflow-y-auto">
+                <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100">
+                  <p class="text-sm text-slate-900 font-medium">New user registration</p>
+                  <p class="text-xs text-slate-500 mt-1">Sarah Johnson just created an account</p>
+                  <p class="text-xs text-slate-400 mt-1">5 minutes ago</p>
+                </div>
+                <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer border-b border-slate-100">
+                  <p class="text-sm text-slate-900 font-medium">Content review needed</p>
+                  <p class="text-xs text-slate-500 mt-1">3 posts pending approval</p>
+                  <p class="text-xs text-slate-400 mt-1">1 hour ago</p>
+                </div>
+                <div class="px-4 py-3 hover:bg-slate-50 cursor-pointer">
+                  <p class="text-sm text-slate-900 font-medium">System update completed</p>
+                  <p class="text-xs text-slate-500 mt-1">Platform updated to v2.1.0</p>
+                  <p class="text-xs text-slate-400 mt-1">3 hours ago</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Admin user menu -->
+          <div class="relative">
+            <button 
+              onclick="toggleAdminMenu()"
+              class="flex items-center gap-2 p-1.5 hover:bg-slate-100 rounded-xl transition-all"
+              aria-label="Admin menu"
+            >
+              <div class="relative">
+                <div class="flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 to-brand-600 text-sm font-semibold text-white">
+                  AM
+                </div>
+                <span class="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full bg-emerald-400 border-2 border-white"></span>
+              </div>
+              <span class="hidden lg:block text-sm font-medium text-slate-700">Alex Monroe</span>
+              <svg class="hidden lg:block h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </button>
+            
+            <!-- Admin dropdown menu -->
+            <div id="adminMenu" class="hidden absolute right-0 mt-2 w-64 rounded-xl bg-white shadow-lg border border-slate-200 py-1 z-50">
+              <div class="px-4 py-3 border-b border-slate-200">
+                <p class="text-sm font-semibold text-slate-900">Alex Monroe</p>
+                <p class="text-xs text-slate-500">alex.monroe@smartblog.com</p>
+                <span class="inline-block mt-1 px-2 py-0.5 bg-purple-100 text-purple-700 text-xs rounded-full">Super Admin</span>
+              </div>
+              <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                </svg>
+                Profile Settings
+              </a>
+              <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+                Admin Settings
+              </a>
+              <a href="#" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Audit Logs
+              </a>
+              <div class="border-t border-slate-200 my-1"></div>
+              <a href="user-dashboard.html" class="flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+                Switch to User View
+              </a>
+              <div class="border-t border-slate-200 my-1"></div>
+              <a href="login.html" class="flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+    <div class="grid gap-6 lg:grid-cols-[280px_1fr]">
+      <!-- Admin Sidebar -->
+      <aside id="sidebar" class="hidden lg:block space-y-6 animate-slide-in">
+        <!-- System status card -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center gap-3 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-brand-600 flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-slate-900">System Status</p>
+              <p class="text-xs text-emerald-600">All systems operational</p>
+            </div>
+          </div>
+          <div class="space-y-3">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="text-slate-600">API</span>
+                <span class="text-emerald-600">99.9%</span>
+              </div>
+              <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width: 99.9%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="text-slate-600">Database</span>
+                <span class="text-emerald-600">100%</span>
+              </div>
+              <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-emerald-500 rounded-full" style="width: 100%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="text-slate-600">Storage</span>
+                <span class="text-amber-600">78%</span>
+              </div>
+              <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div class="h-full bg-amber-500 rounded-full" style="width: 78%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Admin Navigation -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Admin Menu</p>
+          <nav class="space-y-1">
+            <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-purple-50 text-purple-700 font-medium">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+              </svg>
+              Dashboard
+            </a>
+            <a href="#users" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-50 transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+              </svg>
+              Users
+              <span class="ml-auto bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded-full">1,832</span>
+            </a>
+            <a href="#content" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-50 transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+              </svg>
+              Content
+              <span class="ml-auto bg-slate-100 text-slate-700 text-xs font-medium px-2 py-0.5 rounded-full">184</span>
+            </a>
+            <a href="#reviews" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-50 transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              Review Queue
+              <span class="ml-auto bg-red-100 text-red-700 text-xs font-medium px-2 py-0.5 rounded-full">12</span>
+            </a>
+            <a href="#analytics" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-50 transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+              </svg>
+              Analytics
+            </a>
+            <a href="#settings" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-700 hover:bg-slate-50 transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              Settings
+            </a>
+          </nav>
+        </div>
+        
+        <!-- Quick stats -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Quick Stats</p>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+              <span class="text-sm text-slate-600">Active Users</span>
+              <span class="text-sm font-semibold text-slate-900">1,832</span>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+              <span class="text-sm text-slate-600">New Today</span>
+              <span class="text-sm font-semibold text-emerald-600">+47</span>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+              <span class="text-sm text-slate-600">Pending Reviews</span>
+              <span class="text-sm font-semibold text-amber-600">12</span>
+            </div>
+            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+              <span class="text-sm text-slate-600">Reports</span>
+              <span class="text-sm font-semibold text-red-600">3</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Admin actions -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <p class="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 mb-3">Admin Actions</p>
+          <div class="space-y-2">
+            <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-brand-600 text-white font-medium text-sm hover:shadow-lg transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+              </svg>
+              Create Announcement
+            </button>
+            <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-medium text-sm hover:bg-slate-200 transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+              </svg>
+              Export Reports
+            </button>
+            <button class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-slate-100 text-slate-700 font-medium text-sm hover:bg-slate-200 transition-all">
+              <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4zm0 5c0 2.21 3.582 4 8 4s8-1.79 8-4"/>
+              </svg>
+              System Backup
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main id="main-content" class="space-y-6">
+        <!-- Welcome banner -->
+        <div class="rounded-2xl bg-gradient-to-r from-purple-600 via-brand-600 to-blue-600 p-6 sm:p-8 text-white shadow-xl animate-fade-in">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2 mb-2">
+                <span class="px-2 py-1 bg-white/20 rounded-full text-xs font-medium">Super Admin</span>
+                <span class="text-white/80 text-sm">Last login: Today at 09:45 AM</span>
+              </div>
+              <h1 class="text-2xl sm:text-3xl font-bold">Welcome back, Administrator! 🛡️</h1>
+              <p class="mt-2 text-white/90">You have 12 items in review queue and 3 user reports to investigate.</p>
+              <div class="mt-4 flex flex-wrap gap-3">
+                <button class="px-4 py-2 bg-white text-purple-700 rounded-lg text-sm font-medium hover:bg-purple-50 transition-all">
+                  Review Queue
+                </button>
+                <button class="px-4 py-2 bg-white/20 text-white rounded-lg text-sm font-medium hover:bg-white/30 transition-all border border-white/20">
+                  View Reports
+                </button>
+                <button class="px-4 py-2 bg-white/20 text-white rounded-lg text-sm font-medium hover:bg-white/30 transition-all border border-white/20">
+                  System Logs
+                </button>
+              </div>
+            </div>
+            <div class="hidden sm:block">
+              <div class="w-24 h-24 rounded-full bg-white/10 flex items-center justify-center border-2 border-white/20">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Key metrics -->
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="stat-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500">Total Users</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900">1,832</p>
+                <p class="mt-1 text-xs text-emerald-600 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                  </svg>
+                  +12.5% this month
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
+                <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500">Published Posts</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900">184</p>
+                <p class="mt-1 text-xs text-emerald-600 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                  </svg>
+                  +8 this week
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center">
+                <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500">Monthly Traffic</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900">81.4k</p>
+                <p class="mt-1 text-xs text-emerald-600 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                  </svg>
+                  +23.1% vs last month
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+                <svg class="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+          
+          <div class="stat-card rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500">Revenue (MRR)</p>
+                <p class="mt-2 text-3xl font-bold text-slate-900">$12.4k</p>
+                <p class="mt-1 text-xs text-emerald-600 flex items-center gap-1">
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                  </svg>
+                  +5.2%
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center">
+                <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Charts section -->
+        <div class="grid gap-6 lg:grid-cols-2">
+          <!-- Platform growth chart -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-slate-900">Platform Growth</h3>
+              <select class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-slate-50">
+                <option>Last 30 days</option>
+                <option>Last 90 days</option>
+                <option>Last 12 months</option>
+              </select>
+            </div>
+            <div class="chart-container">
+              <canvas id="growthChart"></canvas>
+            </div>
+          </div>
+          
+          <!-- User activity -->
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-slate-900">User Activity</h3>
+              <button class="text-sm text-brand-600 hover:text-brand-700">View details →</button>
+            </div>
+            <div class="space-y-4">
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                  <span class="text-sm text-slate-700">Active users (24h)</span>
+                </div>
+                <span class="text-sm font-semibold text-slate-900">847</span>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                  <span class="text-sm text-slate-700">New posts (24h)</span>
+                </div>
+                <span class="text-sm font-semibold text-slate-900">23</span>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-purple-500"></div>
+                  <span class="text-sm text-slate-700">Comments (24h)</span>
+                </div>
+                <span class="text-sm font-semibold text-slate-900">156</span>
+              </div>
+              <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl">
+                <div class="flex items-center gap-3">
+                  <div class="w-2 h-2 rounded-full bg-amber-500"></div>
+                  <span class="text-sm text-slate-700">New registrations</span>
+                </div>
+                <span class="text-sm font-semibold text-slate-900">47</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Users table -->
+        <div class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div class="px-6 py-4 border-b border-slate-200 bg-slate-50/50">
+            <div class="flex items-center justify-between">
+              <div>
+                <h3 class="text-lg font-semibold text-slate-900">Recent Users</h3>
+                <p class="text-sm text-slate-500 mt-0.5">Manage user accounts and permissions</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <div class="relative">
+                  <input 
+                    type="search" 
+                    placeholder="Filter users..." 
+                    class="pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg bg-white focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20"
+                  />
+                  <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                  </svg>
+                </div>
+                <button class="px-4 py-2 bg-brand-600 text-white rounded-lg text-sm font-medium hover:bg-brand-700 transition-all">
+                  Add User
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-slate-50 border-b border-slate-200">
+                <tr>
+                  <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">User</th>
+                  <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Role</th>
+                  <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Joined</th>
+                  <th class="px-6 py-4 text-left text-xs font-semibold text-slate-600 uppercase tracking-wider">Posts</th>
+                  <th class="px-6 py-4 text-right text-xs font-semibold text-slate-600 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                <tr class="table-row-hover">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-semibold">
+                        MR
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-slate-900">Maya Rivera</p>
+                        <p class="text-xs text-slate-500">maya.r@smartblog.com</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                      Editor
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      <span class="text-sm text-slate-600">Active</span>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-slate-600">Jan 15, 2025</td>
+                  <td class="px-6 py-4 text-sm text-slate-600">34</td>
+                  <td class="px-6 py-4 text-right">
+                    <button class="text-slate-400 hover:text-brand-600 transition-colors">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="table-row-hover">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center text-white text-xs font-semibold">
+                        NP
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-slate-900">Noah Patel</p>
+                        <p class="text-xs text-slate-500">noah.p@smartblog.com</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+                      Author
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
+                      <span class="text-sm text-slate-600">Pending</span>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-slate-600">Mar 3, 2026</td>
+                  <td class="px-6 py-4 text-sm text-slate-600">2</td>
+                  <td class="px-6 py-4 text-right">
+                    <button class="text-slate-400 hover:text-brand-600 transition-colors">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="table-row-hover">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-green-500 flex items-center justify-center text-white text-xs font-semibold">
+                        AS
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-slate-900">Ava Sullivan</p>
+                        <p class="text-xs text-slate-500">ava.s@smartblog.com</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700">
+                      Contributor
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                      <span class="text-sm text-slate-600">Offline</span>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-slate-600">Feb 20, 2026</td>
+                  <td class="px-6 py-4 text-sm text-slate-600">8</td>
+                  <td class="px-6 py-4 text-right">
+                    <button class="text-slate-400 hover:text-brand-600 transition-colors">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+                <tr class="table-row-hover">
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-red-500 flex items-center justify-center text-white text-xs font-semibold">
+                        JC
+                      </div>
+                      <div>
+                        <p class="text-sm font-medium text-slate-900">James Chen</p>
+                        <p class="text-xs text-slate-500">james.c@smartblog.com</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-700">
+                      Editor
+                    </span>
+                  </td>
+                  <td class="px-6 py-4">
+                    <span class="inline-flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                      <span class="text-sm text-slate-600">Active</span>
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-sm text-slate-600">Dec 10, 2024</td>
+                  <td class="px-6 py-4 text-sm text-slate-600">56</td>
+                  <td class="px-6 py-4 text-right">
+                    <button class="text-slate-400 hover:text-brand-600 transition-colors">
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="px-6 py-4 border-t border-slate-200 bg-slate-50/50">
+            <div class="flex items-center justify-between">
+              <p class="text-sm text-slate-600">Showing 4 of 1,832 users</p>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg hover:bg-slate-100 transition-all" disabled>Previous</button>
+                <button class="px-3 py-1.5 text-sm bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition-all">1</button>
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg hover:bg-slate-100 transition-all">2</button>
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg hover:bg-slate-100 transition-all">3</button>
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg hover:bg-slate-100 transition-all">Next</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Review queue -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <h3 class="text-lg font-semibold text-slate-900">Content Review Queue</h3>
+              <p class="text-sm text-slate-500 mt-0.5">Posts awaiting moderation and approval</p>
+            </div>
+            <span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-medium rounded-full">12 pending</span>
+          </div>
+          <div class="space-y-3">
+            <div class="flex items-center justify-between p-4 bg-amber-50 rounded-xl border border-amber-200">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="px-2 py-0.5 bg-amber-200 text-amber-800 text-xs font-medium rounded">High Priority</span>
+                  <span class="text-xs text-slate-500">Submitted 2 hours ago</span>
+                </div>
+                <h4 class="text-sm font-semibold text-slate-900">How to launch a creator-led content series</h4>
+                <p class="text-xs text-slate-500 mt-1">By Sarah Johnson • 3 comments</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-100 rounded-lg hover:bg-emerald-200 transition-all">
+                  Approve
+                </button>
+                <button class="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-all">
+                  Reject
+                </button>
+                <button class="p-1.5 text-slate-400 hover:text-slate-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-medium rounded">Standard</span>
+                  <span class="text-xs text-slate-500">Submitted 5 hours ago</span>
+                </div>
+                <h4 class="text-sm font-semibold text-slate-900">SEO checklist for weekly newsletters</h4>
+                <p class="text-xs text-slate-500 mt-1">By Michael Chen • 1 comment</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-100 rounded-lg hover:bg-emerald-200 transition-all">
+                  Approve
+                </button>
+                <button class="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-all">
+                  Reject
+                </button>
+                <button class="p-1.5 text-slate-400 hover:text-slate-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <div class="flex-1">
+                <div class="flex items-center gap-3 mb-2">
+                  <span class="px-2 py-0.5 bg-slate-100 text-slate-700 text-xs font-medium rounded">Low Priority</span>
+                  <span class="text-xs text-slate-500">Submitted yesterday</span>
+                </div>
+                <h4 class="text-sm font-semibold text-slate-900">A content calendar template for product launches</h4>
+                <p class="text-xs text-slate-500 mt-1">By Emma Watson • 2 comments</p>
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-100 rounded-lg hover:bg-emerald-200 transition-all">
+                  Approve
+                </button>
+                <button class="px-3 py-1.5 text-xs font-medium text-red-700 bg-red-100 rounded-lg hover:bg-red-200 transition-all">
+                  Reject
+                </button>
+                <button class="p-1.5 text-slate-400 hover:text-slate-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-4 pt-4 border-t border-slate-200">
+            <button class="text-sm text-brand-600 hover:text-brand-700 font-medium">
+              View all 12 items in queue →
+            </button>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- JavaScript for interactivity -->
+  <script>
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('growthChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Week 1', 'Week 
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -202,4 +1140,4 @@
       </div>
     </main>
   </body>
-</html>
+</html> -->
