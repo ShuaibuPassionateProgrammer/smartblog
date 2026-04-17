@@ -5,6 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SmartBlog Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#f5fbff',
+                100: '#e7f5ff',
+                200: '#cfe6ff',
+                300: '#9fccff',
+                400: '#61a7ff',
+                500: '#2f84ff',
+                600: '#246bd7',
+                700: '#1d55b0',
+                800: '#19478f',
+                900: '#163d7a'
+              }
+            }
+          }
+        }
+      };
+    </script>
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900 selection:bg-brand-300 selection:text-slate-900">
     <div class="bg-white shadow-sm">
@@ -13,132 +35,171 @@
           <span class="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-brand-100 text-2xl font-bold">S</span>
           <span class="text-lg font-semibold">SmartBlog</span>
         </a>
-        <nav class="flex flex-wrap items-center gap-4 text-sm font-medium text-slate-600">
-          <a href="index.html" class="transition hover:text-brand-600">Home</a>
-          <a href="user-dashboard.html" class="transition hover:text-brand-600">User Dashboard</a>
+        <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 lg:flex">
+          <a href="admin-dashboard.html" class="transition hover:text-brand-600">Dashboard</a>
+          <a href="#users" class="transition hover:text-brand-600">Users</a>
+          <a href="#reviews" class="transition hover:text-brand-600">Reviews</a>
+          <a href="user-dashboard.html" class="transition hover:text-brand-600">User View</a>
         </nav>
+        <div class="flex items-center gap-3">
+          <a href="login.html" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-700">Login</a>
+          <a href="register.html" class="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Register</a>
+        </div>
       </div>
     </div>
 
-    <main class="mx-auto max-w-7xl px-6 py-10 sm:px-8 lg:py-14">
-      <div class="mb-10 rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm sm:p-10">
-        <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Admin dashboard</p>
-            <h1 class="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Monitor blog operations and approval workflows</h1>
-            <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">Manage users, moderate content, and keep the publication running smoothly.</p>
-          </div>
-          <div class="grid gap-3 sm:grid-cols-2">
-            <a href="#users" class="inline-flex items-center justify-center rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">User management</a>
-            <a href="#reviews" class="inline-flex items-center justify-center rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-700">Pending reviews</a>
-          </div>
-        </div>
-      </div>
-
-      <section class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
-          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Active users</p>
-          <p class="mt-4 text-4xl font-semibold text-slate-900">1,832</p>
-          <p class="mt-2 text-sm text-slate-500">Authors and editors signed in this week.</p>
-        </div>
-        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
-          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Total posts</p>
-          <p class="mt-4 text-4xl font-semibold text-slate-900">184</p>
-          <p class="mt-2 text-sm text-slate-500">Published articles in the system.</p>
-        </div>
-        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
-          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Pending review</p>
-          <p class="mt-4 text-4xl font-semibold text-slate-900">12</p>
-          <p class="mt-2 text-sm text-slate-500">Posts waiting for editorial approval.</p>
-        </div>
-        <div class="rounded-[2rem] bg-white p-6 shadow-sm">
-          <p class="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500">Monthly visits</p>
-          <p class="mt-4 text-4xl font-semibold text-slate-900">81.4k</p>
-          <p class="mt-2 text-sm text-slate-500">Visitor sessions across the blog.</p>
-        </div>
-      </section>
-
-      <section id="users" class="mt-10 rounded-[2rem] bg-white p-8 shadow-sm">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Team overview</p>
-            <h2 class="mt-3 text-2xl font-semibold text-slate-900">User roles and status</h2>
-          </div>
-          <p class="text-sm text-slate-500">Most recent platform activity.</p>
-        </div>
-        <div class="mt-8 overflow-hidden rounded-[1.75rem] border border-slate-200">
-          <table class="w-full text-left text-sm text-slate-700">
-            <thead class="bg-slate-50 text-slate-500">
-              <tr>
-                <th class="px-6 py-4">Name</th>
-                <th class="px-6 py-4">Role</th>
-                <th class="px-6 py-4">Status</th>
-                <th class="px-6 py-4">Last active</th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-200 bg-white">
-              <tr>
-                <td class="px-6 py-5">Maya Rivera</td>
-                <td class="px-6 py-5">Editor</td>
-                <td class="px-6 py-5"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Active</span></td>
-                <td class="px-6 py-5">10 min ago</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-5">Noah Patel</td>
-                <td class="px-6 py-5">Author</td>
-                <td class="px-6 py-5"><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">Pending</span></td>
-                <td class="px-6 py-5">34 min ago</td>
-              </tr>
-              <tr>
-                <td class="px-6 py-5">Ava Sullivan</td>
-                <td class="px-6 py-5">Contributor</td>
-                <td class="px-6 py-5"><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Offline</span></td>
-                <td class="px-6 py-5">2 hrs ago</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="reviews" class="mt-10 grid gap-6 xl:grid-cols-[1.35fr_0.65fr]">
-        <div class="rounded-[2rem] bg-white p-8 shadow-sm">
-          <div class="flex items-center justify-between gap-4">
-            <div>
-              <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Content review</p>
-              <h2 class="mt-3 text-2xl font-semibold text-slate-900">Pending approvals</h2>
+    <main class="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:py-12">
+      <div class="grid gap-8 lg:grid-cols-[280px_1fr]">
+        <aside class="space-y-6">
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <div class="flex flex-col gap-4">
+              <div class="flex items-center gap-4">
+                <div class="flex h-14 w-14 items-center justify-center rounded-3xl bg-brand-100 text-2xl font-bold text-brand-700">A</div>
+                <div>
+                  <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Administrator</p>
+                  <p class="mt-2 text-lg font-semibold text-slate-900">Alex Monroe</p>
+                </div>
+              </div>
+              <div class="rounded-3xl bg-slate-50 p-5 text-sm text-slate-600">
+                <p class="font-semibold text-slate-900">System health</p>
+                <p class="mt-3">All services are running smoothly. No incidents reported.</p>
+              </div>
             </div>
-            <span class="rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">12 items</span>
           </div>
-          <div class="mt-8 space-y-5">
-            <article class="rounded-3xl border border-slate-200 p-6">
-              <p class="text-sm font-semibold text-slate-900">How to launch a creator-led content series</p>
-              <p class="mt-2 text-sm text-slate-500">Awaiting editor review · 3 comments</p>
-            </article>
-            <article class="rounded-3xl border border-slate-200 p-6">
-              <p class="text-sm font-semibold text-slate-900">SEO checklist for weekly newsletters</p>
-              <p class="mt-2 text-sm text-slate-500">Needs copy pass · 1 comment</p>
-            </article>
-            <article class="rounded-3xl border border-slate-200 p-6">
-              <p class="text-sm font-semibold text-slate-900">A content calendar template for product launches</p>
-              <p class="mt-2 text-sm text-slate-500">Ready for publication · 2 comments</p>
-            </article>
-          </div>
-        </div>
 
-        <aside class="rounded-[2rem] bg-white p-8 shadow-sm">
-          <p class="text-sm uppercase tracking-[0.24em] text-slate-500">System alerts</p>
-          <div class="mt-6 space-y-4">
-            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-              <p class="text-sm font-semibold text-slate-900">Content moderation reminder</p>
-              <p class="mt-2 text-sm text-slate-500">3 flagged comments need review before publishing.</p>
-            </div>
-            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-              <p class="text-sm font-semibold text-slate-900">New author request</p>
-              <p class="mt-2 text-sm text-slate-500">A new contributor application is awaiting approval.</p>
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Admin menu</p>
+            <nav class="mt-6 space-y-3 text-sm font-medium text-slate-700">
+              <a href="admin-dashboard.html" class="block rounded-3xl bg-brand-50 px-4 py-3 transition hover:bg-brand-100">Overview</a>
+              <a href="#users" class="block rounded-3xl px-4 py-3 transition hover:bg-slate-100">Users</a>
+              <a href="#reviews" class="block rounded-3xl px-4 py-3 transition hover:bg-slate-100">Review queue</a>
+              <a href="#" class="block rounded-3xl px-4 py-3 transition hover:bg-slate-100">Analytics</a>
+            </nav>
+          </div>
+
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Quick stats</p>
+            <div class="mt-5 space-y-4">
+              <div class="flex items-center justify-between rounded-3xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                <span>Active users</span>
+                <span class="font-semibold text-slate-900">1,832</span>
+              </div>
+              <div class="flex items-center justify-between rounded-3xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                <span>Pending reviews</span>
+                <span class="font-semibold text-slate-900">12</span>
+              </div>
+              <div class="flex items-center justify-between rounded-3xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
+                <span>Monthly visits</span>
+                <span class="font-semibold text-slate-900">81.4k</span>
+              </div>
             </div>
           </div>
         </aside>
-      </section>
+
+        <section class="space-y-8">
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+              <div>
+                <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Overview</p>
+                <h1 class="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">Admin control center</h1>
+                <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">Monitor users, review new content, and keep the editorial workflow moving efficiently.</p>
+              </div>
+              <div class="flex flex-wrap gap-3">
+                <button class="rounded-full bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">Audit logs</button>
+                <button class="rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">Review queue</button>
+              </div>
+            </div>
+            <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+              <div class="rounded-3xl bg-slate-50 p-6">
+                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Users</p>
+                <p class="mt-4 text-3xl font-semibold text-slate-900">1,832</p>
+                <p class="mt-2 text-sm text-slate-500">Active this week</p>
+              </div>
+              <div class="rounded-3xl bg-slate-50 p-6">
+                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Posts</p>
+                <p class="mt-4 text-3xl font-semibold text-slate-900">184</p>
+                <p class="mt-2 text-sm text-slate-500">Currently published</p>
+              </div>
+              <div class="rounded-3xl bg-slate-50 p-6">
+                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Reviews</p>
+                <p class="mt-4 text-3xl font-semibold text-slate-900">12</p>
+                <p class="mt-2 text-sm text-slate-500">Awaiting approval</p>
+              </div>
+              <div class="rounded-3xl bg-slate-50 p-6">
+                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Sessions</p>
+                <p class="mt-4 text-3xl font-semibold text-slate-900">81.4k</p>
+                <p class="mt-2 text-sm text-slate-500">Monthly visitors</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Team overview</p>
+                <h2 class="mt-3 text-2xl font-semibold text-slate-900">User roles and status</h2>
+              </div>
+              <p class="text-sm text-slate-500">Most recent platform activity.</p>
+            </div>
+            <div class="mt-8 overflow-hidden rounded-[1.75rem] border border-slate-200">
+              <table class="w-full text-left text-sm text-slate-700">
+                <thead class="bg-slate-50 text-slate-500">
+                  <tr>
+                    <th class="px-6 py-4">Name</th>
+                    <th class="px-6 py-4">Role</th>
+                    <th class="px-6 py-4">Status</th>
+                    <th class="px-6 py-4">Last active</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200 bg-white">
+                  <tr>
+                    <td class="px-6 py-5">Maya Rivera</td>
+                    <td class="px-6 py-5">Editor</td>
+                    <td class="px-6 py-5"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Active</span></td>
+                    <td class="px-6 py-5">10 min ago</td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-5">Noah Patel</td>
+                    <td class="px-6 py-5">Author</td>
+                    <td class="px-6 py-5"><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">Pending</span></td>
+                    <td class="px-6 py-5">34 min ago</td>
+                  </tr>
+                  <tr>
+                    <td class="px-6 py-5">Ava Sullivan</td>
+                    <td class="px-6 py-5">Contributor</td>
+                    <td class="px-6 py-5"><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Offline</span></td>
+                    <td class="px-6 py-5">2 hrs ago</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
+            <div class="flex items-center justify-between gap-4">
+              <div>
+                <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Review queue</p>
+                <h2 class="mt-3 text-2xl font-semibold text-slate-900">Pending approvals</h2>
+              </div>
+              <span class="rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">12 items</span>
+            </div>
+            <div class="mt-8 space-y-5">
+              <article class="rounded-3xl border border-slate-200 p-6">
+                <p class="text-sm font-semibold text-slate-900">How to launch a creator-led content series</p>
+                <p class="mt-2 text-sm text-slate-500">Awaiting editor review · 3 comments</p>
+              </article>
+              <article class="rounded-3xl border border-slate-200 p-6">
+                <p class="text-sm font-semibold text-slate-900">SEO checklist for weekly newsletters</p>
+                <p class="mt-2 text-sm text-slate-500">Needs copy pass · 1 comment</p>
+              </article>
+              <article class="rounded-3xl border border-slate-200 p-6">
+                <p class="text-sm font-semibold text-slate-900">A content calendar template for product launches</p>
+                <p class="mt-2 text-sm text-slate-500">Ready for publication · 2 comments</p>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
     </main>
   </body>
 </html>

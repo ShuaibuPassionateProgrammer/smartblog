@@ -14,8 +14,9 @@ A static blog landing page built with HTML and Tailwind CSS.
 - Latest articles previews
 - Newsletter subscription CTA
 - Responsive layout
-- User dashboard mockup
-- Admin dashboard mockup
+- User dashboard mockup with sidebar navigation
+- Admin dashboard mockup with approval workflow and analytics
+- Login and register pages with mock auth forms
 
 ## Customize
 
