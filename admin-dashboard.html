@@ -932,212 +932,294 @@
       new Chart(ctx, {
         type: 'line',
         data: {
-          labels: ['Week 1', 'Week 
-
-
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SmartBlog Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: {
-                50: '#f5fbff',
-                100: '#e7f5ff',
-                200: '#cfe6ff',
-                300: '#9fccff',
-                400: '#61a7ff',
-                500: '#2f84ff',
-                600: '#246bd7',
-                700: '#1d55b0',
-                800: '#19478f',
-                900: '#163d7a'
+          labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+          datasets: [{
+            label: 'Users',
+            data: [120, 145, 168, 192, 215, 238, 265, 289],
+            borderColor: '#246bd7',
+            backgroundColor: 'rgba(36, 107, 215, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#246bd7',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }, {
+            label: 'Posts',
+            data: [45, 52, 61, 73, 89, 95, 108, 125],
+            borderColor: '#10b981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointBackgroundColor: '#10b981',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'top',
+              labels: {
+                usePointStyle: true,
+                padding: 20,
+                font: {
+                  size: 12,
+                  family: 'Inter, sans-serif'
+                }
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              titleColor: '#ffffff',
+              bodyColor: '#ffffff',
+              borderColor: '#246bd7',
+              borderWidth: 1,
+              cornerRadius: 8,
+              displayColors: true,
+              callbacks: {
+                label: function(context) {
+                  return context.dataset.label + ': ' + context.parsed.y;
+                }
               }
             }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                font: {
+                  size: 12,
+                  family: 'Inter, sans-serif'
+                }
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: 'rgba(0, 0, 0, 0.05)'
+              },
+              ticks: {
+                font: {
+                  size: 12,
+                  family: 'Inter, sans-serif'
+                }
+              }
+            }
+          },
+          interaction: {
+            intersect: false,
+            mode: 'index'
+          },
+          animation: {
+            duration: 2000,
+            easing: 'easeInOutQuart'
           }
         }
-      };
-    </script>
-  </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900 selection:bg-brand-300 selection:text-slate-900">
-    <div class="bg-white shadow-sm">
-      <div class="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-8">
-        <a href="index.html" class="inline-flex items-center gap-3 text-brand-700">
-          <span class="inline-flex h-12 w-12 items-center justify-center rounded-3xl bg-brand-100 text-2xl font-bold">S</span>
-          <span class="text-lg font-semibold">SmartBlog</span>
-        </a>
-        <nav class="hidden items-center gap-6 text-sm font-medium text-slate-600 lg:flex">
-          <a href="admin-dashboard.html" class="transition hover:text-brand-600">Dashboard</a>
-          <a href="#users" class="transition hover:text-brand-600">Users</a>
-          <a href="#reviews" class="transition hover:text-brand-600">Reviews</a>
-          <a href="user-dashboard.html" class="transition hover:text-brand-600">User View</a>
-        </nav>
+      });
+    });
+
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const button = document.getElementById('mobile-menu-button');
+      menu.classList.toggle('hidden');
+      button.setAttribute('aria-expanded', !menu.classList.contains('hidden'));
+    }
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', function(event) {
+      const menu = document.getElementById('mobile-menu');
+      const button = document.getElementById('mobile-menu-button');
+      if (!menu.contains(event.target) && !button.contains(event.target)) {
+        menu.classList.add('hidden');
+        button.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Theme toggle (for future dark mode implementation)
+    function toggleTheme() {
+      document.documentElement.classList.toggle('dark');
+      const themeButton = document.getElementById('theme-toggle');
+      const isDark = document.documentElement.classList.contains('dark');
+      themeButton.innerHTML = isDark ?
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>' :
+        '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>';
+    }
+
+    // Search functionality
+    function performSearch() {
+      const query = document.getElementById('search-input').value;
+      if (query.trim()) {
+        // In a real application, this would perform an actual search
+        console.log('Searching for:', query);
+        // For demo purposes, show a notification
+        showNotification('Search functionality would be implemented here', 'info');
+      }
+    }
+
+    // Notification system
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+      notification.innerHTML = `
         <div class="flex items-center gap-3">
-          <a href="login.html" class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-brand-300 hover:text-brand-700">Login</a>
-          <a href="register.html" class="rounded-full bg-brand-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-700">Register</a>
+          <div class="flex-shrink-0">
+            ${type === 'success' ? '<svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' :
+              type === 'error' ? '<svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' :
+              '<svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'}
+          </div>
+          <p class="text-sm font-medium text-slate-900">${message}</p>
+          <button onclick="this.parentElement.parentElement.remove()" class="ml-auto text-slate-400 hover:text-slate-600">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+          </button>
         </div>
-      </div>
-    </div>
+      `;
 
-    <main class="mx-auto max-w-7xl px-6 py-8 sm:px-8 lg:py-12">
-      <div class="grid gap-8 lg:grid-cols-[280px_1fr]">
-        <aside class="space-y-6">
-          <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-            <div class="flex flex-col gap-4">
-              <div class="flex items-center gap-4">
-                <div class="flex h-14 w-14 items-center justify-center rounded-3xl bg-brand-100 text-2xl font-bold text-brand-700">A</div>
-                <div>
-                  <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Administrator</p>
-                  <p class="mt-2 text-lg font-semibold text-slate-900">Alex Monroe</p>
-                </div>
-              </div>
-              <div class="rounded-3xl bg-slate-50 p-5 text-sm text-slate-600">
-                <p class="font-semibold text-slate-900">System health</p>
-                <p class="mt-3">All services are running smoothly. No incidents reported.</p>
-              </div>
-            </div>
-          </div>
+      document.body.appendChild(notification);
 
-          <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Admin menu</p>
-            <nav class="mt-6 space-y-3 text-sm font-medium text-slate-700">
-              <a href="admin-dashboard.html" class="block rounded-3xl bg-brand-50 px-4 py-3 transition hover:bg-brand-100">Overview</a>
-              <a href="#users" class="block rounded-3xl px-4 py-3 transition hover:bg-slate-100">Users</a>
-              <a href="#reviews" class="block rounded-3xl px-4 py-3 transition hover:bg-slate-100">Review queue</a>
-              <a href="#" class="block rounded-3xl px-4 py-3 transition hover:bg-slate-100">Analytics</a>
-            </nav>
-          </div>
+      // Animate in
+      setTimeout(() => {
+        notification.classList.remove('translate-x-full');
+      }, 100);
 
-          <div class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-            <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Quick stats</p>
-            <div class="mt-5 space-y-4">
-              <div class="flex items-center justify-between rounded-3xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                <span>Active users</span>
-                <span class="font-semibold text-slate-900">1,832</span>
-              </div>
-              <div class="flex items-center justify-between rounded-3xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                <span>Pending reviews</span>
-                <span class="font-semibold text-slate-900">12</span>
-              </div>
-              <div class="flex items-center justify-between rounded-3xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                <span>Monthly visits</span>
-                <span class="font-semibold text-slate-900">81.4k</span>
-              </div>
-            </div>
-          </div>
-        </aside>
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => notification.remove(), 300);
+      }, 5000);
+    }
 
-        <section class="space-y-8">
-          <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Overview</p>
-                <h1 class="mt-3 text-3xl font-semibold text-slate-900 sm:text-4xl">Admin control center</h1>
-                <p class="mt-4 max-w-2xl text-sm leading-7 text-slate-600">Monitor users, review new content, and keep the editorial workflow moving efficiently.</p>
-              </div>
-              <div class="flex flex-wrap gap-3">
-                <button class="rounded-full bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-200">Audit logs</button>
-                <button class="rounded-full bg-brand-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-brand-700">Review queue</button>
-              </div>
-            </div>
-            <div class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <div class="rounded-3xl bg-slate-50 p-6">
-                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Users</p>
-                <p class="mt-4 text-3xl font-semibold text-slate-900">1,832</p>
-                <p class="mt-2 text-sm text-slate-500">Active this week</p>
-              </div>
-              <div class="rounded-3xl bg-slate-50 p-6">
-                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Posts</p>
-                <p class="mt-4 text-3xl font-semibold text-slate-900">184</p>
-                <p class="mt-2 text-sm text-slate-500">Currently published</p>
-              </div>
-              <div class="rounded-3xl bg-slate-50 p-6">
-                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Reviews</p>
-                <p class="mt-4 text-3xl font-semibold text-slate-900">12</p>
-                <p class="mt-2 text-sm text-slate-500">Awaiting approval</p>
-              </div>
-              <div class="rounded-3xl bg-slate-50 p-6">
-                <p class="text-sm uppercase tracking-[0.24em] text-slate-500">Sessions</p>
-                <p class="mt-4 text-3xl font-semibold text-slate-900">81.4k</p>
-                <p class="mt-2 text-sm text-slate-500">Monthly visitors</p>
-              </div>
-            </div>
-          </div>
+    // Table sorting functionality
+    function sortTable(column) {
+      const table = document.getElementById('users-table');
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
 
-          <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Team overview</p>
-                <h2 class="mt-3 text-2xl font-semibold text-slate-900">User roles and status</h2>
-              </div>
-              <p class="text-sm text-slate-500">Most recent platform activity.</p>
-            </div>
-            <div class="mt-8 overflow-hidden rounded-[1.75rem] border border-slate-200">
-              <table class="w-full text-left text-sm text-slate-700">
-                <thead class="bg-slate-50 text-slate-500">
-                  <tr>
-                    <th class="px-6 py-4">Name</th>
-                    <th class="px-6 py-4">Role</th>
-                    <th class="px-6 py-4">Status</th>
-                    <th class="px-6 py-4">Last active</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200 bg-white">
-                  <tr>
-                    <td class="px-6 py-5">Maya Rivera</td>
-                    <td class="px-6 py-5">Editor</td>
-                    <td class="px-6 py-5"><span class="rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">Active</span></td>
-                    <td class="px-6 py-5">10 min ago</td>
-                  </tr>
-                  <tr>
-                    <td class="px-6 py-5">Noah Patel</td>
-                    <td class="px-6 py-5">Author</td>
-                    <td class="px-6 py-5"><span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">Pending</span></td>
-                    <td class="px-6 py-5">34 min ago</td>
-                  </tr>
-                  <tr>
-                    <td class="px-6 py-5">Ava Sullivan</td>
-                    <td class="px-6 py-5">Contributor</td>
-                    <td class="px-6 py-5"><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">Offline</span></td>
-                    <td class="px-6 py-5">2 hrs ago</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+      rows.sort((a, b) => {
+        const aValue = a.cells[column].textContent.trim();
+        const bValue = b.cells[column].textContent.trim();
 
-          <div class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm">
-            <div class="flex items-center justify-between gap-4">
-              <div>
-                <p class="text-sm uppercase tracking-[0.24em] text-brand-600">Review queue</p>
-                <h2 class="mt-3 text-2xl font-semibold text-slate-900">Pending approvals</h2>
-              </div>
-              <span class="rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">12 items</span>
-            </div>
-            <div class="mt-8 space-y-5">
-              <article class="rounded-3xl border border-slate-200 p-6">
-                <p class="text-sm font-semibold text-slate-900">How to launch a creator-led content series</p>
-                <p class="mt-2 text-sm text-slate-500">Awaiting editor review · 3 comments</p>
-              </article>
-              <article class="rounded-3xl border border-slate-200 p-6">
-                <p class="text-sm font-semibold text-slate-900">SEO checklist for weekly newsletters</p>
-                <p class="mt-2 text-sm text-slate-500">Needs copy pass · 1 comment</p>
-              </article>
-              <article class="rounded-3xl border border-slate-200 p-6">
-                <p class="text-sm font-semibold text-slate-900">A content calendar template for product launches</p>
-                <p class="mt-2 text-sm text-slate-500">Ready for publication · 2 comments</p>
-              </article>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-  </body>
-</html> -->
+        if (column === 0) { // Name column
+          return aValue.localeCompare(bValue);
+        } else if (column === 1) { // Role column
+          return aValue.localeCompare(bValue);
+        } else if (column === 2) { // Status column
+          return aValue.localeCompare(bValue);
+        } else if (column === 3) { // Last active column
+          return new Date(aValue) - new Date(bValue);
+        }
+
+        return 0;
+      });
+
+      // Re-append sorted rows
+      rows.forEach(row => tbody.appendChild(row));
+
+      // Update sort indicators
+      const headers = table.querySelectorAll('th');
+      headers.forEach((header, index) => {
+        const sortIcon = header.querySelector('.sort-icon');
+        if (sortIcon) {
+          sortIcon.className = 'sort-icon ml-1 w-4 h-4 text-slate-400';
+        }
+      });
+
+      const currentHeader = headers[column];
+      const currentSortIcon = currentHeader.querySelector('.sort-icon');
+      if (currentSortIcon) {
+        currentSortIcon.className = 'sort-icon ml-1 w-4 h-4 text-brand-600';
+      }
+    }
+
+    // Modal functionality
+    function openModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // Close modals when clicking outside
+    document.addEventListener('click', function(event) {
+      if (event.target.classList.contains('modal-overlay')) {
+        const modal = event.target;
+        closeModal(modal.id);
+      }
+    });
+
+    // Keyboard navigation for accessibility
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        // Close any open modals
+        const openModals = document.querySelectorAll('.modal-overlay:not(.hidden)');
+        openModals.forEach(modal => closeModal(modal.id));
+      }
+    });
+
+    // Performance optimization: Lazy load images
+    if ('loading' in HTMLImageElement.prototype) {
+      const images = document.querySelectorAll('img[loading="lazy"]');
+      images.forEach(img => {
+        img.src = img.dataset.src;
+      });
+    }
+
+    // Initialize tooltips
+    function initTooltips() {
+      const tooltipElements = document.querySelectorAll('[data-tooltip]');
+
+      tooltipElements.forEach(element => {
+        element.addEventListener('mouseenter', showTooltip);
+        element.addEventListener('mouseleave', hideTooltip);
+      });
+    }
+
+    function showTooltip(event) {
+      const element = event.target;
+      const tooltipText = element.getAttribute('data-tooltip');
+
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip fixed z-50 px-2 py-1 text-xs font-medium text-white bg-slate-900 rounded shadow-lg pointer-events-none';
+      tooltip.textContent = tooltipText;
+      tooltip.id = 'tooltip-' + Date.now();
+
+      document.body.appendChild(tooltip);
+
+      const rect = element.getBoundingClientRect();
+      tooltip.style.left = rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2) + 'px';
+      tooltip.style.top = rect.top - tooltip.offsetHeight - 8 + 'px';
+    }
+
+    function hideTooltip() {
+      const tooltips = document.querySelectorAll('.tooltip');
+      tooltips.forEach(tooltip => tooltip.remove());
+    }
+
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      initTooltips();
+      console.log('SmartBlog Admin Dashboard loaded successfully');
+    });
+  </script>
+</body>
+</html>
